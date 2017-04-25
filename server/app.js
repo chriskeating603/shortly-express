@@ -79,7 +79,32 @@ app.post('/links',
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
+app.post('/signup', 
+(req, res, next) => {
+  if (!models.Users.isValidUsername(username)) {
+    // send back a 404 if link is not valid
+    return res.sendStatus(404);
+  }
 
+  return models.Users.get({ username })
+    .then(username => {
+      if (!isAvailable(username)) {
+        res.redirect('/signup')
+      }
+      return username;
+    })
+    .then((username) => {
+      return models.Users.create({
+        username: username,
+        password: password,
+      });
+    }).then(() => {
+      res.redirect('login')
+    })
+    .catch(error => {
+      throw error;
+    });
+});
 
 
 /************************************************************/
