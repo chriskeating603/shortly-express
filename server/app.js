@@ -81,11 +81,11 @@ app.post('/links',
 /************************************************************/
 app.post('/signup', 
 (req, res, next) => {
+  console.log('req', req)
   if (!models.Users.isValidUsername(username)) {
     // send back a 404 if link is not valid
     return res.sendStatus(404);
   }
-
   return models.Users.get({ username })
     .then(username => {
       if (!isAvailable(username)) {

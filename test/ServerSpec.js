@@ -47,8 +47,7 @@ describe('', function() {
     /**************************************************************************************/
     /* TODO: If you create a new MySQL tables, add it to the tablenames collection below. */
     /**************************************************************************************/
-    var tablenames = ['links', 'clicks'
-];
+    var tablenames = ['links', 'clicks', 'users'];
 
     db.connect(function(err) {
       if (err) { return done(err); }
@@ -81,6 +80,7 @@ describe('', function() {
       db.query('INSERT INTO users SET ?', newUser, function(err, results) {
         db.query('SELECT * FROM users WHERE username = ?', newUser.username, function(err, results) {
           var user = results[0];
+          console.log('wefewf', user);
           expect(user.username).to.exist;
           expect(user.password).to.exist;
           expect(user.timestamp).to.exist;

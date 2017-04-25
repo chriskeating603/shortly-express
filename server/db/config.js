@@ -20,9 +20,10 @@ module.exports = (db) => {
       // Create clicks table
       return db.queryAsync(`
         CREATE TABLE IF NOT EXISTS users (
-          id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-          username VARCHAR(255),
-          password VARCHAR(10)
+          id INT NOT NULL AUTO_INCREMENT NOT NULL PRIMARY KEY,
+          username VARCHAR(255) NOT NULL UNIQUE,
+          password VARCHAR(10),
+          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         );`)
       .then(() => {
         return db.queryAsync(`
