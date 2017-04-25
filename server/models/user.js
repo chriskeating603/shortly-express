@@ -1,6 +1,8 @@
+const crypto = require('crypto');
 const utils = require('../lib/hashUtils');
+const Promise = require('bluebird');
+const request = Promise.promisify(require('request'), { multiArgs: true });
 const Model = require('./model');
-
 // Write you user database model methods here
 
 // SIGN UP
@@ -13,7 +15,7 @@ class Users extends Model {
 	isValidUsername (username) {
 		var isValid = true;
 		for (var i = 0; i < username.length; i++) {
-			if (username.charCodeAt(i) < 97 || username.charCodeAt(i) > 122) {
+			if (username.charCodeAt(i) < 64 || username.charCodeAt(i) > 122) {
 				isValid = false;
 				return isValid;
 			}
@@ -21,14 +23,10 @@ class Users extends Model {
 		return isValid;
 	}
 
-	isAvailable (username) {
-  	
-	}
-
  	isValidPassword (password) {
  		var isValid = true;
 		for (var i = 0; i < username.length; i++) {
-			if (username.charCodeAt(i) < 97 || username.charCodeAt(i) > 122) {
+			if (username.charCodeAt(i) < 64 || username.charCodeAt(i) > 122) {
 				isValid = false;
 				return isValid;
 			}
@@ -37,10 +35,12 @@ class Users extends Model {
  	}
 
  	create(user) {
-    user.password = utils.hashingFunction(user.password);
+    user.password = utils(user.password)
     return super.create.call(this, user);
   }
 }
+
+module.exports = new Users();
 
 
 

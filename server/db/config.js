@@ -22,7 +22,7 @@ module.exports = (db) => {
         CREATE TABLE IF NOT EXISTS users (
           id INT NOT NULL AUTO_INCREMENT NOT NULL PRIMARY KEY,
           username VARCHAR(255) NOT NULL UNIQUE,
-          password VARCHAR(10),
+          password VARCHAR(255),
           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         );`)
       .then(() => {

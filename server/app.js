@@ -79,27 +79,52 @@ app.post('/links',
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
+
+app.get('/login'), 
+(req, res, next) => {
+  var username = req.body;
+  var password = req.body.password;
+  models.Users.get({ username })
+  .then(username => {
+    if(!username) {// send back a 404 if link is not valid
+      return res.sendStatus(404);
+    } 
+    return username;
+  })
+  .then(() => {
+    utils(password)
+  })    
+  return models.Users.get({ username })
+    .then(username => {
+      if (!username) {
+        res.redirect('/login')
+      }
+      return username;
+    })
+}
+
 app.post('/signup', 
 (req, res, next) => {
-  console.log('req', req)
-  if (!models.Users.isValidUsername(username)) {
+  var username = req.body.username;
+  var password = req.body.password;
+  if (!(models.Users.isValidUsername(username))) {
     // send back a 404 if link is not valid
     return res.sendStatus(404);
   }
   return models.Users.get({ username })
     .then(username => {
-      if (!isAvailable(username)) {
+      if (username) {
         res.redirect('/signup')
       }
-      return username;
+      return req.body;
     })
-    .then((username) => {
+    .then((body) => {
       return models.Users.create({
-        username: username,
-        password: password,
+        username: body.username,
+        password: body.password
       });
-    }).then(() => {
-      res.redirect('login')
+    }).then((options) => {
+      res.redirect('/')
     })
     .catch(error => {
       throw error;

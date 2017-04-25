@@ -80,7 +80,6 @@ describe('', function() {
       db.query('INSERT INTO users SET ?', newUser, function(err, results) {
         db.query('SELECT * FROM users WHERE username = ?', newUser.username, function(err, results) {
           var user = results[0];
-          console.log('wefewf', user);
           expect(user.username).to.exist;
           expect(user.password).to.exist;
           expect(user.timestamp).to.exist;
