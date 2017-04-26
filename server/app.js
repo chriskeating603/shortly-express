@@ -80,51 +80,56 @@ app.post('/links',
 // Write your authentication routes here
 /************************************************************/
 
-app.get('/login'), 
+app.post('/login',
 (req, res, next) => {
-  var username = req.body;
+  var username = req.body.username;
   var password = req.body.password;
-  models.Users.get({ username })
-  .then(username => {
-    if(!username) {// send back a 404 if link is not valid
-      return res.sendStatus(404);
+  return models.Users.get({username})
+  .then(row => {
+    if(!row) {
+      res.writeHead(301, {'location' : '/login'});
+      res.end();
     } 
-    return username;
+    return row;
   })
-  .then(() => {
-    utils(password)
-  })    
-  return models.Users.get({ username })
-    .then(username => {
-      if (!username) {
-        res.redirect('/login')
-      }
-      return username;
-    })
-}
+  .then((row) => {
+    // console.log(row)
+    if (utils(password) === row.password) {
+      res.writeHead(200, {'location' : '/'});
+      res.end();    
+    } else {
+      res.writeHead(301, {'location' : '/login'});
+      res.end();  
+    }
+  }).catch(error => {
+      throw error;
+    });
+})
 
 app.post('/signup', 
 (req, res, next) => {
   var username = req.body.username;
   var password = req.body.password;
   if (!(models.Users.isValidUsername(username))) {
-    // send back a 404 if link is not valid
     return res.sendStatus(404);
   }
   return models.Users.get({ username })
     .then(username => {
+      console.log(username);
       if (username) {
+        // res.writeHead(200, {'Content-Type': 'text/html'})
         res.redirect('/signup')
       }
       return req.body;
     })
-    .then((body) => {
+    .then(() => {
       return models.Users.create({
-        username: body.username,
-        password: body.password
+        username: req.body.username,
+        password: req.body.password
       });
     }).then((options) => {
       res.redirect('/')
+      res.end()
     })
     .catch(error => {
       throw error;
